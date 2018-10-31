@@ -3,8 +3,8 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, AlertController } from 'ionic-angular';
 import leaflet from 'leaflet';
 //import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
+//import 'rxjs/add/operator/map';
+//import 'rxjs/add/operator/do';
 
 
 @Component({
