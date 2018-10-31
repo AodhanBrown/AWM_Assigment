@@ -1,6 +1,11 @@
+import { MapsProvider } from '../../providers/maps/maps';
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, AlertController } from 'ionic-angular';
 import leaflet from 'leaflet';
+//import { Http } from '@angular/http';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+
 
 @Component({
   selector: 'page-home',
@@ -9,15 +14,36 @@ import leaflet from 'leaflet';
 export class HomePage {
   @ViewChild('map') mapContainer: ElementRef;
   map: any;
-  constructor(public navCtrl: NavController) {
+  locationList = [];
+  constructor(public navCtrl: NavController, private alertCtrl: AlertController, private mapsProvider:MapsProvider) {
+  //this.getLocationData();
 
   }
 
   ionViewDidEnter() {
     this.loadmap();
+    this.getLocationData();
+    console.log(this.locationList);
+    
+  }
+
+  getLocationData(){
+    //this.mapsProvider.getLocation().subscribe(data => this.locationList = data);
+    this.mapsProvider.getLocation().subscribe(data => this.getCoordinates(data));
+  }
+
+  getCoordinates(data) {
+    console.log(data['location']['coordinates'][0]);
+    console.log(data['location']['coordinates'][1]);
+    //leaflet.marker(data['location']['coordinates'][0], data['location']['coordinates'][1]).addTo(this.map);
+    var marker = new leaflet.Marker(new leaflet.LatLng(data['location']['coordinates'][1], data['location']['coordinates'][0]));
+    marker.addTo(this.map)
+
+
   }
 
   loadmap() {
+
     this.map = leaflet.map("map").fitWorld();
     leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attributions: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -36,7 +62,7 @@ export class HomePage {
       }).on('locationerror', (err) => {
         alert(err.message);
     })
-
+ 
   }
 
 }
